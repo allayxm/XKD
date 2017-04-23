@@ -1,0 +1,95 @@
+主要用来记录版本升级需要更新的数据库脚本（由于升级，不可避免会增加原有表的字段，或者新建的表中需要有初始数据，则在这里记录）
+======================================================================================================
+
+记录人：杨彬
+--------------------------------------------------------------------------------------------------------
+记录内容：
+--------------------------------------------------------------------------------------------------------
+1.游戏记录升级需要执行的语句
+update ......
+
+======================================================================================================
+
+记录人：蒯伟
+--------------------------------------------------------------------------------------------------------
+记录内容：
+--------------------------------------------------------------------------------------------------------
+1.订单退款升级需要执行的语句
+--------------------------------------------------------------------------------------------------------
+update Hishop_OrderReturns set OrderItemID=(select  id from Hishop_OrderItems where type=0 and  OrderId=Hishop_OrderReturns.OrderId and  ProductId=Hishop_OrderReturns.ProductId and SkuId=Hishop_OrderReturns.SkuId)
+GO
+update Hishop_OrderReturns set OrderItemID=(select  id from Hishop_OrderItems where type=0 and  OrderId=Hishop_OrderReturns.OrderId and  SkuId=Hishop_OrderReturns.SkuId)
+where OrderItemID=0
+GO
+update Hishop_OrderReturns set OrderItemID=(select  id from Hishop_OrderItems where type=0 and  OrderId=Hishop_OrderReturns.OrderId and  ProductId=Hishop_OrderReturns.ProductId)
+where OrderItemID=0
+GO
+
+--------------------------------------------------------------------------------------------------------
+----1.商品咨询表需要执行的语句
+--------------------------------------------------------------------------------------------------------
+update Hishop_ProductReviews set OrderItemID=(select  id from Hishop_OrderItems where type=0 and  OrderId=Hishop_ProductReviews.OrderId and  ProductId=Hishop_ProductReviews.ProductId and SkuId=Hishop_ProductReviews.SkuId)
+GO
+update Hishop_ProductReviews set OrderItemID=(select  id from Hishop_OrderItems where type=0 and  OrderId=Hishop_ProductReviews.OrderId and  SkuId=Hishop_ProductReviews.SkuId)
+where OrderItemID=0
+GO
+update Hishop_ProductReviews set OrderItemID=(select  id from Hishop_OrderItems where type=0 and  OrderId=Hishop_ProductReviews.OrderId and  ProductId=Hishop_ProductReviews.ProductId)
+where OrderItemID=0
+--------------------------------------------------------------------------------------------------------
+----掌柜名片js的修改（\Utility\StoreCardSet.js路径修改为了\Utility\Storage\StoreCardSet.js），如果不更新这个js，需要手动修改下这个文件的更新时间为升级当天的时间
+--------------------------------------------------------------------------------------------------------
+----2.更新微信模版的名称
+--------------------------------------------------------------------------------------------------------
+update Hishop_MessageTemplates set Name='退款通知' where WxOpenTM='TM00599' and Name='退款成功'
+
+--------------------------------------------------------------------------------------------------------
+
+
+
+--------------------------------------------------------------------------------------------------------
+更新用户的下单和支付等时间
+--------------------------------------------------------------------------------------------------------
+update aspnet_Members set LastOrderDate=(select top 1 OrderDate from Hishop_Orders where UserID=aspnet_Members.UserId order by OrderDate desc )
+update aspnet_Members set PayOrderDate=(select top 1 PayDate from Hishop_Orders where UserID=aspnet_Members.UserId order by PayDate desc )
+update aspnet_Members set FinishOrderDate=(select top 1 FinishDate from Hishop_Orders where UserID=aspnet_Members.UserId order by FinishDate desc )
+
+
+--------------------------------------------------------------------------------------------------------
+更新游戏字段的值
+--------------------------------------------------------------------------------------------------------
+update Hishop_PromotionGamePrizes set  PrizeName='一等奖' where PrizeGrade=0
+update Hishop_PromotionGamePrizes set  PrizeName='二等奖' where PrizeGrade=1
+update Hishop_PromotionGamePrizes set  PrizeName='三等奖' where PrizeGrade=2
+update Hishop_PromotionGamePrizes set  PrizeName='四等奖' where PrizeGrade=3
+
+--更新游戏原来奖品的名称
+update Hishop_PromotionGamePrizes set Prize='赠送积分: '+ CONVERT(nvarchar(20), GivePoint)  where prizetype=0
+update Hishop_PromotionGamePrizes set Prize=(select CouponName from Hishop_Coupon_Coupons b where b.CouponId=GiveCouponId)  where prizetype=1
+update Hishop_PromotionGamePrizes set Prize=(select ProductName from Hishop_Products b where b.ProductId=GiveShopBookId)  where prizetype=2
+
+--------------------------------------------------------------------------------------------------------
+--------------------------------------------------------------------------------------------------------
+
+
+
+2016-02-15:
+订单拆分页面之前非超级管理员是没有权限进入该页面的（配置了权限也进不去），已经修改；
+分销商的上级之前非超级管理员是没有权限进入该页面的（配置了权限也进不去）(/Admin/fenxiao/superiorselect.aspx?userid=57)，已经修改；
+运费模版后台编辑的时候，单位“件”一直都在，存在误解，所以运费模版列表页和编辑页面文字做了处理；
+
+--------------------------------------------------------------------------------------------------------
+1.把优惠券删除的条件改为只有未领取的优惠券才能删除(以前已领取的也能删除，造成页面报错），
+  另外新增优惠券的时候，判断重复的问题改为只要进行中的优惠券名称不重复即可；
+2.销客多3.3.1前台用户申请提现的时候，因为读取的是缓存的数据，所以造成申请了一次提现所有金额并管理员后台审核发放后，还可以继续申请提现之前的金额。
+3.订单佣金修改为：下单的时候，佣金是怎么分配（除了管理员后台手动调整价格），那完成订单后，佣金详细记录就是这么分配的。
+4.分销商调整的价格，管理后台订单详细页面会显示分销商的让利信息
+5.订单设置了7天自动收货，那么订单完成的时候给分销商发的佣金提醒记录本来会显示订单状态为“已发货”，现在改为“交易成功”
+6.修复线下提现发放操作的时候，如果打开了两个页面点击发放同一个佣金提现申请，则会多扣用户一次佣金提现。
+7.图文素材页面，如果不选择原文，下面的内容修改为也显示出来(之前是隐藏，造成发布微信群发时候，发布的图文消息中没有文章内容），这样发布微信群发消息的时候，用户可以增加内容到微信的文章中（360也是可以输入的，已和老高确认）
+8.更新会员的最近下单时间、订单付款时间、完成订单时间的方法 (还需要写语句更新以前的数据)
+9.一元夺宝开奖类型选择了第一个，没满足份数，到时间就开奖了的问题修改
+10.拆分订单功能修改：之前的拆分订单，如果最后只剩下一个“已退款”或“已退货”的订单，则拆分后，不会自动关闭该拆分后的订单；问题已修改。
+11.公告消息如果有未读的信息，则在会员中心和分销中心的首页会滚动显示，需要验证当前的用户是否有权限查看信息（如发给分销商的信息，消息公告列表页面，普通会员是看不到的）
+12.分享助力分享出去的优惠券，用户领取的时候会报错，已经修改；
+13.订单拆分功能和评论功能修改了，增加了关联字段，只要能正常评论即可（在商品详细页面的评论以及在订单详细页面的评论）。
+======================================================================================================
