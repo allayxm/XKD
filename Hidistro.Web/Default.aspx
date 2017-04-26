@@ -59,7 +59,7 @@
             </section>
         </section>  <section class="members_bottom"><%if (ShowCopyRight != "1")
                       { %>  
-            <section style="height:48px;"><a href="http://www.hishop.com.cn/support/" target="_blank" style="color: #b3b3b3;">HiShop技术支持 </a></section>
+            <section style="height:48px;"><a href="#" target="_blank" style="color: #b3b3b3;">滴滴分享</a></section>
         <%} %></section>
     </div>
 
