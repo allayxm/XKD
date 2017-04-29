@@ -1355,6 +1355,8 @@
     <Content Include="Admin\WeiXin\WXConfigChangeBind.aspx" />
     <Content Include="Admin\WeiXin\WXSendDemo.aspx" />
     <Content Include="alipay.html" />
+    <Content Include="ApiCloud\css\api.css" />
+    <Content Include="ApiCloud\script\api.js" />
     <Content Include="API\FootJs.aspx" />
     <Content Include="App_Data\20160421_Debuglog.txt" />
     <Content Include="App_Data\data\paipai\test.txt" />
@@ -2884,6 +2886,7 @@
     <Content Include="Templates\vshop\t9\script\head.js" />
     <Content Include="Templates\vshop\t9\Skin-HomePage.html" />
     <Content Include="Templates\vshop\t9\template.xml" />
+    <Content Include="test.html" />
     <Content Include="TestExpress.aspx" />
     <Content Include="UserLogin.aspx" />
     <Content Include="UserLogining.aspx" />

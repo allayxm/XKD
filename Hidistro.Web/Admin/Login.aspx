@@ -86,12 +86,7 @@
                 <asp:Button ID="btnAdminLogin" runat="server" Text="点击登录" CssClass="btn btn-success" /> <Hi:SmallStatusMessage ID="lblStatus" runat="server" Visible="False" Width="260px" />
             </div>
 		</form>
-		<div class="wechat-code">
-			<div class="code-img">
-				<a href="/utility/pics/wfxqrcode.jpg" target="_blank"><img src="/utility/pics/wfxqrcode.jpg" style="width:95px;height:95px;"></a>
-			</div>
-			<p>微信扫描左侧二维码，了解销客多产品最新升级动态。</p>
-		</div>
+		
 		<div class="wechatimg"></div>
 		<div class="shoppingimg"></div>
 		<div class="modimg"></div>
