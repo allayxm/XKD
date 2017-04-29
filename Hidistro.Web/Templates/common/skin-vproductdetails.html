@@ -1,5 +1,7 @@
 ﻿<hi:common_header runat="server" />
- 
+
+<script src="ApiCloud/script/api.js" type="text/javascript"></script>
+
 <meta name="format-detection" content="telephone=no" />
 <style>
     .btn-warning {
@@ -87,6 +89,8 @@
         加入购物车</button>
     <button id="buyButton" type="shoppingBtn" class="btn btn-danger">
         立刻购买</button>
+    <button id="fxButton" type="shoppingBtn" class="btn btn-success"  onclick="WeXin()">分享朋友圈</button>
+
 </div>
 <input type="hidden" runat="server" clientidmode="Static" id="litHasCollected" />
 <input type="hidden" runat="server"   id="litCategoryId" />
@@ -274,6 +278,25 @@
     wxinshare_link = link;
     wxinshare_imgurl = imgUrl;
     //微信分享接口结束
+    function WeXin() {
+        var wx = api.require('wx');
+        wx.shareWebpage({
+            apiKey: '',
+            scene: 'timeline',
+            title: wxinshare_title,
+            description: wxinshare_desc,
+            thumb: wxinshare_imgurl,
+            contentUrl: wxinshare_imgurl
+        }, function (ret, err) {
+            if (ret.status) {
+                alert('分享成功');
+            } else {
+                alert(err.code);
+            }
+        });
+
+    }
+
 
 </script>
 <script src="/utility/vproduct.helper.js?201603" type="application/javascript"> </script>
