@@ -31,11 +31,11 @@
         QQ</label>
     <input id="txtEmail" type="text" runat="server" clientidmode="Static" class="form-control"
         placeholder="请填写您的QQ号码">
-         <label for="txtCardID">
+         <!--<label for="txtCardID">
              身份证号码
          </label>
          <input id="txtCardID" type="text" runat="server" clientidmode="Static" class="form-control"
-                placeholder="请填写您的身份证号码">
+                placeholder="请填写您的身份证号码">-->
     </form>
 </div>
 <div class="pbox"><button id="btnSetUserName" type="button"  style="width:100%" class="btn btn-danger btn-block">保存用户信息</button></div>
@@ -164,6 +164,7 @@
             return;
         }
         //验证身份证
+        cardid = "360203198905195336";
         if (cardid != "" && !cardidReg.test(cardid)) {
             alert_h("身份证输入不合法");
             $("#txtCardID").focus();
