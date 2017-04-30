@@ -1379,7 +1379,6 @@
     <Content Include="ExchangeDetails.aspx" />
     <Content Include="ExchangeList.aspx" />
     <Content Include="Express.xml" />
-    <Content Include="favicon.ico" />
     <Content Include="Follow.aspx" />
     <Content Include="Game.aspx" />
     <Content Include="Global.asax" />
